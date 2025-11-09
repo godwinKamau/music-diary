@@ -1,3 +1,16 @@
+:root{
+  --dark:#001427;
+  --jasmine:#F4D58D;
+  --green:#708D81;
+  --orange:#BF0603;
+  --red:#8D0801;
+}
+
+body{
+  background: var(--dark);
+  color:var(--jasmine);
+}
+
 .main-controls {
   padding-bottom: 0.7rem;
   height: 170px;

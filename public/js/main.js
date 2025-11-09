@@ -5,28 +5,30 @@ const soundClips = document.querySelector('.sound-clips')
 
 
 fetch('/audioFromUser')
-    .then(response => {
-        return response.blob()
+    .then(res => {
+        return res.json()
+        // return response.blob()
     })
-    .then(blob => {
-        console.log(blob)
-        const clipContainer = document.createElement("article");
-        const clipLabel = document.createElement("p");
-        const audio = document.createElement("audio");
-        const deleteButton = document.createElement("button");
+    .then(data => {console.log(data)})
+//     .then(blob => {
+//         console.log(blob)
+//         const clipContainer = document.createElement("article");
+//         const clipLabel = document.createElement("p");
+//         const audio = document.createElement("audio");
+//         const deleteButton = document.createElement("button");
 
-        clipContainer.classList.add("clip");
-        audio.setAttribute("controls", "");
-        deleteButton.textContent = "Delete";
-        clipLabel.textContent = "yeah!";
+//         clipContainer.classList.add("clip");
+//         audio.setAttribute("controls", "");
+//         deleteButton.textContent = "Delete";
+//         clipLabel.textContent = "yeah!";
 
-        clipContainer.appendChild(audio);
-        clipContainer.appendChild(clipLabel);
-        clipContainer.appendChild(deleteButton);
-        soundClips.appendChild(clipContainer);
-        const audioURL = window.URL.createObjectURL(blob);
-        audio.src = audioURL;
-    })
+//         clipContainer.appendChild(audio);
+//         clipContainer.appendChild(clipLabel);
+//         clipContainer.appendChild(deleteButton);
+//         soundClips.appendChild(clipContainer);
+//         const audioURL = window.URL.createObjectURL(blob);
+//         audio.src = audioURL;
+//     })
 //check for device support
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     console.log("getUserMedia supported.")
