@@ -59,23 +59,30 @@ module.exports = function(app,db,mongodb,fs,User) {
             bucket.openDownloadStreamByName(doc.filename).
                 pipe(fs.createWriteStream(path.join(__dirname,`./finds/${doc.filename}`)));
         response[tracker] = doc
-//had to ask google how to send raw data from file to make a new blob in server: https://www.google.com/search?q=send+blob+as+a+response+to+client+side+js&oq=send+blob+as+a+response+to+client&gs_lcrp=EgZjaHJvbWUqBwgBECEYoAEyBggAEEUYOTIHCAEQIRigATIHCAIQIRigATIHCAMQIRigATIHCAQQIRigATIHCAUQIRigATIHCAYQIRiPAtIBCTE2NzA0ajBqNKgCALACAQ&sourceid=chrome&ie=UTF-8
-        // fs.readFile(path.join(__dirname,`./finds/${doc.filename}`),(err,data) => {
-        //     if (err) {
-        //         console.log(err)
-        //         return res.status(500).send('Error reading file');
-        //     }
-        //     res.setHeader('Content-Type', 'audio/ogg');
-        //     res.setHeader('Content-Disposition', 'attachment; filename="yeah!.ogg"');
-        //     res.send(data); // Send the raw binary data
-        // })
-            //TODO: separate calls client side to request 1 audio file at a time.
         
         }
         console.log(response)
-        res.json(response)
+        // res.json(response)
+        res.render(('profile'), { user : req.user.username,
+            response : response
+         })
     
     })
+
+    app.get('/singularAudio/:file', (req,res) =>{
+        const file = req.params.file
+//had to ask google how to send raw data from file to make a new blob in server: https://www.google.com/search?q=send+blob+as+a+response+to+client+side+js&oq=send+blob+as+a+response+to+client&gs_lcrp=EgZjaHJvbWUqBwgBECEYoAEyBggAEEUYOTIHCAEQIRigATIHCAIQIRigATIHCAMQIRigATIHCAQQIRigATIHCAUQIRigATIHCAYQIRiPAtIBCTE2NzA0ajBqNKgCALACAQ&sourceid=chrome&ie=UTF-8
+        fs.readFile(path.join(__dirname,`./finds/${file}`),(err,data) => {
+                if (err) {
+                    console.log(err)
+                    return res.status(500).send('Error reading file');
+                }
+                res.setHeader('Content-Type', 'audio/ogg');
+                res.setHeader('Content-Disposition', 'attachment; filename="yeah!.ogg"');
+                res.send(data); // Send the raw binary data
+            })
+    })
+    
 
 
 }

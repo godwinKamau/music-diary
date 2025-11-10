@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+    <h1>Welcome <%= user %> </h1>
     <!-- Used MDN guide to making an audio recorder:https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API -->
      <section class="main-controls">
         <canvas class="visualizer"></canvas>
@@ -16,7 +17,12 @@
         </section>
      </section>
      <section class="sound-clips">
-
+        <h2>You have <%= Object.values(response).length %> entries</h2>
+        <% for ( let i = 0; i < Object.values(response).length; i++) { %>
+        <ul>
+            <li><%= Object.values(response)[i].filename %></li>
+        </ul>
+        <% } %>
      </section>
 
     <script type="application/javascript" src="js/main.js"></script>

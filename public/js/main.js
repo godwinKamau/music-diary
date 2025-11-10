@@ -4,31 +4,13 @@ const stop = document.querySelector('.stop')
 const soundClips = document.querySelector('.sound-clips')
 
 
-fetch('/audioFromUser')
-    .then(res => {
-        return res.json()
-        // return response.blob()
-    })
-    .then(data => {console.log(data)})
-//     .then(blob => {
-//         console.log(blob)
-//         const clipContainer = document.createElement("article");
-//         const clipLabel = document.createElement("p");
-//         const audio = document.createElement("audio");
-//         const deleteButton = document.createElement("button");
-
-//         clipContainer.classList.add("clip");
-//         audio.setAttribute("controls", "");
-//         deleteButton.textContent = "Delete";
-//         clipLabel.textContent = "yeah!";
-
-//         clipContainer.appendChild(audio);
-//         clipContainer.appendChild(clipLabel);
-//         clipContainer.appendChild(deleteButton);
-//         soundClips.appendChild(clipContainer);
-//         const audioURL = window.URL.createObjectURL(blob);
-//         audio.src = audioURL;
+// fetch('/audioFromUser')
+//     .then(res => {
+//         return res.json()
+//         // return response.blob()
 //     })
+//     .then(data => {console.log(data)})
+
 //check for device support
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     console.log("getUserMedia supported.")
@@ -110,3 +92,52 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     })
     .catch(err => console.error(err))
 }
+
+const recordingList = document.querySelectorAll('li')
+
+Array.from(recordingList).forEach(entry => {
+    entry.addEventListener('click', () => {
+        fetch(`/singularAudio/${entry.innerText}`)
+            .then(response => {return response.blob()})
+            .then(blob => {
+                console.log(blob)
+                const clipContainer = document.createElement("article");
+                // const clipLabel = document.createElement("p");
+                const audio = document.createElement("audio");
+                // const deleteButton = document.createElement("button");
+
+                clipContainer.classList.add("clip");
+                audio.setAttribute("controls", "");
+                // deleteButton.textContent = "Delete";
+                // clipLabel.textContent = "yeah!";
+
+                clipContainer.appendChild(audio);
+                // clipContainer.appendChild(clipLabel);
+                // clipContainer.appendChild(deleteButton);
+                entry.appendChild(clipContainer);
+                const audioURL = window.URL.createObjectURL(blob);
+                audio.src = audioURL;    
+            })
+    })
+})
+
+//=====working with blobs
+//     .then(blob => {
+//         console.log(blob)
+//         const clipContainer = document.createElement("article");
+//         const clipLabel = document.createElement("p");
+//         const audio = document.createElement("audio");
+//         const deleteButton = document.createElement("button");
+
+//         clipContainer.classList.add("clip");
+//         audio.setAttribute("controls", "");
+//         deleteButton.textContent = "Delete";
+//         clipLabel.textContent = "yeah!";
+
+//         clipContainer.appendChild(audio);
+//         clipContainer.appendChild(clipLabel);
+//         clipContainer.appendChild(deleteButton);
+//         soundClips.appendChild(clipContainer);
+//         const audioURL = window.URL.createObjectURL(blob);
+//         audio.src = audioURL;
+//     })

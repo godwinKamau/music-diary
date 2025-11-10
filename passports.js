@@ -38,9 +38,10 @@ app.post('/register', function (req, res) {
     app.get('/profile', function(req, res) {
         console.log(req.body)
         if (req.isAuthenticated()) {
-            res.render(('profile'), {user:req.session.passport.user})
+            res.redirect('/audioFromUser')
         } else {
-            res.render(('login'), {alert:false})
+            console.log('login attempt failed')
+            res.render(('login'))
         }
     })
 
