@@ -18,11 +18,13 @@
      </section>
      <section class="sound-clips">
         <h2>You have <%= Object.values(response).length %> entries</h2>
-        <% for ( let i = 0; i < Object.values(response).length; i++) { %>
+        
         <ul>
-            <li><%= Object.values(response)[i].filename %></li>
-        </ul>
+        <% for ( let i = 0; i < Object.values(response).length; i++) { %>
+            <li data-id="<%= Object.values(response)[i]._id%>"><%= Object.values(response)[i].metadata.name %></li>
         <% } %>
+        </ul>
+        
      </section>
 
     <script type="application/javascript" src="js/main.js"></script>

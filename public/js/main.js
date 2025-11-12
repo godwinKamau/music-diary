@@ -15,22 +15,29 @@ const soundClips = document.querySelector('.sound-clips')
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     console.log("getUserMedia supported.")
     navigator.mediaDevices
-    .getUserMedia(
+    .getUserMedia(                                            //choose type of audio
         {
             audio:true,
         }
     )
     .then(stream => {
-        const mediaRecorder = new MediaRecorder(stream)     //making the recording
+        
+//found with Michael Kazin and AI
+        const options = {
+            mimeType: 'audio/webm; codecs=opus',
+            audioBitsPerSecond: 128000 // Optional: specify bitrate
+        };
+//
+
+        const mediaRecorder = new MediaRecorder(stream,options)     //making the recording
 
         //making anonymous functions for record and stop
         record.onclick = () => {
-            mediaRecorder.start(5000)
+            mediaRecorder.start()
             console.log(mediaRecorder.state)
             record.style.background = 'red'
         }
 
-        //probably need this for GF chunks
         //======Making a handler for recording
         let chunks = []
         mediaRecorder.ondataavailable = (blob) =>{
@@ -66,6 +73,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             soundClips.appendChild(clipContainer);
 
             const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+
+//transferring the blob to Multer server-side
             const formData = new FormData()
             formData.append('audio' , blob, `${clipName}.ogg`)
             console.log(formData)
@@ -97,10 +106,14 @@ const recordingList = document.querySelectorAll('li')
 
 Array.from(recordingList).forEach(entry => {
     entry.addEventListener('click', () => {
-        fetch(`/singularAudio/${entry.innerText}`)
+        if (entry.childElementCount > 0){
+            return
+        }
+        console.log(entry.dataset.id)
+        fetch(`/singularAudio/${entry.dataset.id}`)
             .then(response => {return response.blob()})
-            .then(blob => {
-                console.log(blob)
+            .then(blobz => {
+                console.log(blobz)
                 const clipContainer = document.createElement("article");
                 // const clipLabel = document.createElement("p");
                 const audio = document.createElement("audio");
@@ -115,7 +128,7 @@ Array.from(recordingList).forEach(entry => {
                 // clipContainer.appendChild(clipLabel);
                 // clipContainer.appendChild(deleteButton);
                 entry.appendChild(clipContainer);
-                const audioURL = window.URL.createObjectURL(blob);
+                const audioURL = window.URL.createObjectURL(blobz);
                 audio.src = audioURL;    
             })
     })

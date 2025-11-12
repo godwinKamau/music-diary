@@ -28,14 +28,14 @@ module.exports = function(app,db,mongodb,fs,User) {
 
 //type is used as a --middleware-- in this post request in the midst of passing the request.
     app.post('/makefile', upload.single('audio'), (req,res) => {
-        console.log('user',req.user)
+        const name = req.file.filename.split('.')[0]
 //quick refresher on async/await: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
 //Also, writing and deleting files: https://nodejs.org/en/learn/manipulating-files/writing-files-with-nodejs
         const workSchedule = async(req) => {
             await fs.createReadStream(req.file.path).
             pipe(bucket.openUploadStream(req.file.filename, {
                 chunkSizeBytes: 1048576,
-                metadata: { name: req.file.filename , author:req.user.username, time:Date.now() }
+                metadata: { name , author:req.user.username, time:Date.now() }
             }))
             console.log('Added to database.')
             fs.unlink(`${req.file.path}`, (err) => {
@@ -55,13 +55,10 @@ module.exports = function(app,db,mongodb,fs,User) {
         const cursor = bucket.find({ 'metadata.author': `${req.user.username}` })
         for await (const doc of cursor){
             tracker++
-            console.log(doc)
-            bucket.openDownloadStreamByName(doc.filename).
-                pipe(fs.createWriteStream(path.join(__dirname,`./finds/${doc.filename}`)));
-        response[tracker] = doc
-        
+            // console.log('document details',doc)
+            response[tracker] = doc
         }
-        console.log(response)
+        // console.log(response)
         // res.json(response)
         res.render(('profile'), { user : req.user.username,
             response : response
@@ -69,20 +66,24 @@ module.exports = function(app,db,mongodb,fs,User) {
     
     })
 
-    app.get('/singularAudio/:file', (req,res) =>{
-        const file = req.params.file
-//had to ask google how to send raw data from file to make a new blob in server: https://www.google.com/search?q=send+blob+as+a+response+to+client+side+js&oq=send+blob+as+a+response+to+client&gs_lcrp=EgZjaHJvbWUqBwgBECEYoAEyBggAEEUYOTIHCAEQIRigATIHCAIQIRigATIHCAMQIRigATIHCAQQIRigATIHCAUQIRigATIHCAYQIRiPAtIBCTE2NzA0ajBqNKgCALACAQ&sourceid=chrome&ie=UTF-8
-        fs.readFile(path.join(__dirname,`./finds/${file}`),(err,data) => {
-                if (err) {
-                    console.log(err)
-                    return res.status(500).send('Error reading file');
-                }
-                res.setHeader('Content-Type', 'audio/ogg');
-                res.setHeader('Content-Disposition', 'attachment; filename="yeah!.ogg"');
-                res.send(data); // Send the raw binary data
-            })
+    app.get('/singularAudio/:id', async(req,res) =>{
+        const id = req.params.id
+        let object
+        const files = bucket.find({ _id : new ObjectId(`${id}`) })
+        for await (const file of files){
+            
+            // object = await bucket.openDownloadStream(new ObjectId(`${id}`)).
+            //     pipe(fs.createWriteStream(path.join(__dirname,`./finds/${file.metadata.name}`)));
+
+//Michael Kazin: You don't have to save intermediate products. That's the point of the friggin' pipe/stream! 
+            object = await bucket.openDownloadStream(new ObjectId(`${id}`)).
+                pipe(res);
+
+            // res.redirect(`/sendFile?path=${object.path}`)
+        }
+//how to pass query parameters into redirect url(not uri): https://stackoverflow.com/questions/19035373/how-do-i-redirect-in-expressjs-while-passing-some-context
+        
     })
-    
 
 
 }

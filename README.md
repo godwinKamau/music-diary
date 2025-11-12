@@ -68,9 +68,7 @@ This runs the server using nodemon for automatic reload during development.
 
 ## Features
 
-- User Authentication
-- Recording and 
-- MongoDB-backed storage for larger, ogg files.
+- Recording and storing audio files for audiophiles.
 - Full-stack Express + EJS templating
 - Passport Strategies to hold user authentication and sessions
 
@@ -78,9 +76,6 @@ This runs the server using nodemon for automatic reload during development.
 
 ## Future Improvements
 
-- Separate UI's for customers and administrators
-
-- More specific features used with geolocation.
-    i.e limiting the scope of rooms, organizing the database around different cities, and contorlling access to features based off of geolocation.
-
-- Changes to user schema to add point system based off of how many rooms they visit.
+- Add a YouTube iframe to pair with the audio files so users can listen to their recording and the musical inspiration side-by-side.
+- Major CSS updates to give it pizzazz.
+- Reorganizing database and I/O functions to only call the files the user clicks on.
