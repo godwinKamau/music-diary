@@ -29,6 +29,7 @@ module.exports = function(app,db,mongodb,fs,User) {
 //type is used as a --middleware-- in this post request in the midst of passing the request.
     app.post('/makefile', upload.single('audio'), (req,res) => {
         const name = req.file.filename.split('.')[0]
+        console.log(req.file.path)
 //quick refresher on async/await: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
 //Also, writing and deleting files: https://nodejs.org/en/learn/manipulating-files/writing-files-with-nodejs
         const workSchedule = async(req) => {
